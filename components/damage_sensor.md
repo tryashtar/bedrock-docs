@@ -30,7 +30,7 @@ Lastly, there are two fields that can be used to perform some action in response
 |Type|Name|Description|
 |-|-|-|
 |<img src="../icons/object.png" width=16>|`event`|Run an [entity event](../events.md). This goes inside an `on_damage` object alongside `filters`.|
-|<img src="../icons/string.png" width=16>|`on_damage_sound_event`|[Sound event](../sound-events) to play. This plays in addition to the entity's normal hurt sound. It can either be an entry in `individual_event_sounds`, or the entity's own `entity_sounds`.|
+|<img src="../icons/string.png" width=16>|`on_damage_sound_event`|[Sound event](../sound-events.md) to play. This plays in addition to the entity's normal hurt sound. It can either be an entry in `individual_event_sounds`, or the entity's own `entity_sounds`.|
 
 In `filters` and `event`, the `other` subject represents the attacker, if the damage was caused by an entity. The `damager` subject represents the entity that dealt the damage directly. For melee attacks, these are the same. For a ranged attack, for example, `other` would be the skeleton, while `damager` would be the arrow.
 
@@ -47,7 +47,10 @@ In `filters` and `event`, the `other` subject represents the attacker, if the da
 
 * If `damage_modifier` results in zero taken damage, the entity will still get hurt, except when it's `fall` damage. This is different from setting `deals_damage` to false.
 
-* Sometimes it's desirable to run more than one [event](../events.md) in reponse to damage, such as running an event on both `self` and `attacker`. It's possible to use the `trigger` field in the referenced event to run a separate event with a different subject.
+* [MCPE-155588](https://bugs.mojang.com/browse/MCPE-155588): An invalid damage type in `cause` will be silently ignored.
+* [MCPE-155589](https://bugs.mojang.com/browse/MCPE-155589): Damage from blocks like magma and berry bushes sets the `other` subject equal to the `self` subject.
+* [MCPE-108988](https://bugs.mojang.com/browse/MCPE-108988): Damage from blocks like magma and berry bushes counts as `fatal` in a `has_damage` filter test.
+* [MCPE-66473](https://bugs.mojang.com/browse/MCPE-66473): A `has_damage` filter test will pass if the base damage is enough to kill the entity, not taking into account armor reduction.
 
 ---
 
