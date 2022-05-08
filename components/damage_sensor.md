@@ -53,7 +53,7 @@ In `filters` and `event`, the `other` subject represents the attacker, if the da
 
 ## Examples
 Take double damage from tridents:
-```json
+```jsonc
 "minecraft:damage_sensor": {
    "triggers": {
       "on_damage": {
@@ -71,7 +71,7 @@ Take double damage from tridents:
 ```
 
 Immunity to all damage except fall damage:
-```json
+```jsonc
 "minecraft:damage_sensor": {
    "triggers": [
       {
@@ -86,7 +86,7 @@ Immunity to all damage except fall damage:
 ```
 
 Run an event on both the attacker and target:
-```json
+```jsonc
 "components": {
    "minecraft:damage_sensor": {
       "triggers": {
@@ -119,7 +119,7 @@ Run an event on both the attacker and target:
 ```
 
 Vanilla's way of making villagers transform into zombies:
-```json
+```jsonc
 "minecraft:damage_sensor": {
    "triggers": {
       "on_damage": {
