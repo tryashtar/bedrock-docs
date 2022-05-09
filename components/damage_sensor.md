@@ -25,11 +25,12 @@ There is no way to check for the *amount* of damage. If the checks pass, the tri
 |<img src="../icons/int.png" width=16>|`damage_modifier`|Added to the damage taken. Can be made negative to reduce taken damage, but can't reduce it below 0.|
 |<img src="../icons/float.png" width=16>|`damage_multiplier`|Multiplies the damage taken, after `damage_modifier`. Can't reduce it below 1, unless `damage_modifier` already did.|
 
-Lastly, there are two fields that can be used to perform some action in response to the damage:
+Lastly, there are three fields that can be used to perform some action in response to the damage:
 
 |Type|Name|Description|
 |-|-|-|
-|<img src="../icons/object.png" width=16>|`event`|Run an [entity event](../events.md). This goes inside an `on_damage` object alongside `filters`.|
+|<img src="../icons/string.png" width=16>|`event`|Name of an [entity event](../events.md) to run. This goes inside an `on_damage` object alongside `filters`.|
+|<img src="../icons/string.png" width=16>|`target`|Subject for the event. This also goes inside `on_damage`, next to `event`.|
 |<img src="../icons/string.png" width=16>|`on_damage_sound_event`|[Sound event](../sound-events.md) to play. This plays in addition to the entity's normal hurt sound. It can either be an entry in `individual_event_sounds`, or the entity's own `entity_sounds`.|
 
 In `filters` and `event`, the `other` subject represents the attacker, if the damage was caused by an entity. The `damager` subject represents the entity that dealt the damage directly. For melee attacks, these are the same. For a ranged attack, for example, `other` would be the skeleton, while `damager` would be the arrow.
@@ -71,6 +72,33 @@ Take double damage from tridents:
          }
       },
       "damage_multiplier": 2.0
+   }
+}
+```
+
+Run a command when punched:
+```jsonc
+"components": {
+   "minecraft:damage_sensor": {
+      "triggers": {
+         "cause": "entity_attack",
+         "on_damage": {
+            "filters": {
+               "test": "is_family",
+               "subject": "other",
+               "value": "player"
+            },
+            "event": "punched"
+         },
+         "deals_damage": false
+      }
+   }
+},
+"events": {
+   "punched": {
+      "run_command": {
+         "command": "scoreboard players add @s test 1"
+      }
    }
 }
 ```
