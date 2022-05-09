@@ -8,7 +8,7 @@ After one trigger activates, any subsequent triggers are ignored, even if they w
 
 ---
 
-The component has only one field: <img src="../icons/object.png" width=16>/<img src="../icons/list.png" width=16> `triggers`. It can either be a single trigger object, or a list of them. A trigger object has several optional fields.
+The component has only one field: <img src="../icons/object.png" width=16>/<img src="../icons/list.png" width=16> `triggers`. It can either be a single trigger object, or a list of them. A trigger object has several possible fields, all of them optional.
 
 By default, a trigger will activate for *all* kinds of damage. There are two fields that allow for more specific control:
 
@@ -17,7 +17,7 @@ By default, a trigger will activate for *all* kinds of damage. There are two fie
 |<img src="../icons/string.png" width=16>|`cause`|Only activate for [damage of a specific type](../damage-types.md).|
 |<img src="../icons/object.png" width=16>/<img src="../icons/list.png" width=16>|`filters`|Only activate when the [filter](../filters.md) passes. This goes inside an `on_damage` object alongside `event`. The `has_damage` test is often used here to check for `fatal` damage.|
 
-If the checks pass, the trigger will activate. There are three fields that can modify the damage in response:
+There is no way to check for the *amount* of damage. If the checks pass, the trigger will activate. There are three fields that can modify the damage in response:
 
 |Type|Name|Description|
 |-|-|-|
@@ -45,12 +45,14 @@ In `filters` and `event`, the `other` subject represents the attacker, if the da
   * When reducing damage with these fields, the incoming damage will always be greater than the received damage. Therefore, the entity will be eligible for getting hurt every tick, but will ultimately take no damage.
   * <p><video src="../videos/damage_modifier.mp4" width="400"/></p>
 
-* If `damage_modifier` results in zero taken damage, the entity will still get hurt, except when it's `fall` damage. This is different from setting `deals_damage` to false.
+* Damage sensors can both detect and produce zero-damage hurts. For example, the resistance V effect causes entities to take zero damage from all sources, but still turn red and make noise. Setting `deals_damage` to false will prevent this.
+* Fire damage will not activate damage sensors if the entity is immune due to the fire resistance effect or [`fire_immune`](./fire_immune.md) component.
+* `fall` damage is unique: when reduced to zero by any means, the entity will not get hurt (turn red and make noise). This was most likely added as a special case so goats and frogs didn't look like they were taking fall damage from large jumps. Damage sensors can still detect zero-damage fall damage. Also note that the feather falling enchantment can never reduce fall damage below one point of damage.
 
-* [MCPE-155588](https://bugs.mojang.com/browse/MCPE-155588): An invalid damage type in `cause` will be silently ignored.
+* [MCPE-155588](https://bugs.mojang.com/browse/MCPE-155588): An invalid damage type in `cause` is silently ignored.
 * [MCPE-155589](https://bugs.mojang.com/browse/MCPE-155589): Damage from blocks like magma and berry bushes sets the `other` subject equal to the `self` subject.
-* [MCPE-108988](https://bugs.mojang.com/browse/MCPE-108988): Damage from blocks like magma and berry bushes counts as `fatal` in a `has_damage` filter test.
-* [MCPE-66473](https://bugs.mojang.com/browse/MCPE-66473): A `has_damage` filter test will pass if the base damage is enough to kill the entity, not taking into account armor reduction.
+* [MCPE-108988](https://bugs.mojang.com/browse/MCPE-108988): A `has_damage` filter test for `fatal` damage will pass when taking damage from blocks like magma and berry bushes, regardless of whether the damage was fatal.
+* [MCPE-66473](https://bugs.mojang.com/browse/MCPE-66473): A `has_damage` filter test for `fatal` damage will pass if the base damage is enough to kill the entity, not taking into account armor reduction.
 
 ---
 
@@ -78,7 +80,8 @@ Immunity to all damage except fall damage:
 "minecraft:damage_sensor": {
    "triggers": [
       {
-         // deals_damage defaults to true
+         // deals_damage defaults to true,
+         // so we don't have to specify it
          "cause": "fall"
       },
       {
