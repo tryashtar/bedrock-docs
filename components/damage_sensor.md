@@ -8,6 +8,8 @@ After one trigger activates, any subsequent triggers are ignored, even if they w
 
 ---
 
+## JSON Structure
+
 The component has only one field: <img src="../icons/object.png" width=16>/<img src="../icons/list.png" width=16> `triggers`. It can either be a single trigger object, or a list of them. A trigger object has several possible fields, all of them optional.
 
 By default, a trigger will activate for *all* kinds of damage. There are two fields that allow for more specific control:
@@ -33,7 +35,14 @@ Lastly, there are three fields that can be used to perform some action in respon
 |<img src="../icons/string.png" width=16>|`target`|Subject for the event. This also goes inside `on_damage`, next to `event`.|
 |<img src="../icons/string.png" width=16>|`on_damage_sound_event`|[Sound event](../sound-events.md) to play. This plays in addition to the entity's normal hurt sound. It can either be an entry in `individual_event_sounds`, or the entity's own `entity_sounds`.|
 
-In `filters` and `event`, the `other` subject represents the attacker, if the damage was caused by an entity. The `damager` subject represents the entity that dealt the damage directly. For melee attacks, these are the same. For a ranged attack, for example, `other` would be the skeleton, while `damager` would be the arrow.
+In `filters`, there are three different entities that can be used as the `subject`:
+* `self` is the entity taking damage, like normal.
+* `damager` is the entity dealing the damage.
+* `other` is the entity responsible for the damage.
+
+For ranged attacks, `damager` is the projectile, and `other` is the shooter. For melee attacks, or projectiles not shot by an entity, `damager` and `other` are both the same entity. For damage not caused by an entity, neither of these are set, so any filters using them will fail.
+
+These entities can also be used as the event `target`, [except for `damager`](https://bugs.mojang.com/browse/MCPE-157652).
 
 ---
 
@@ -46,14 +55,16 @@ In `filters` and `event`, the `other` subject represents the attacker, if the da
   * When reducing damage with these fields, the incoming damage will always be greater than the received damage. Therefore, the entity will be eligible for getting hurt every tick, but will ultimately take no damage.
   * <p><video src="../videos/damage_modifier.mp4" width="400"/></p>
 
+* The damage from `/kill` cannot be detected or prevented. `/kill` bypasses damage sensors entirely.
 * Damage sensors can both detect and produce zero-damage hurts. For example, the resistance V effect causes entities to take zero damage from all sources, but still turn red and make noise. Setting `deals_damage` to false will prevent this.
 * Fire damage will not activate damage sensors if the entity is immune due to the fire resistance effect or [`fire_immune`](./fire_immune.md) component.
 * `fall` damage is unique: when reduced to zero by any means, the entity will not get hurt (turn red and make noise). This was most likely added as a special case so goats and frogs didn't look like they were taking fall damage from large jumps. Damage sensors can still detect zero-damage fall damage. Also note that the feather falling enchantment can never reduce fall damage below one point of damage.
 
 * [MCPE-155588](https://bugs.mojang.com/browse/MCPE-155588): An invalid damage type in `cause` is silently ignored.
-* [MCPE-155589](https://bugs.mojang.com/browse/MCPE-155589): Damage from blocks like magma and berry bushes sets the `other` subject equal to the `self` subject.
+* [MCPE-155589](https://bugs.mojang.com/browse/MCPE-155589): Damage from blocks like magma and berry bushes sets the `other` subject equal to the `self` subject, and activates triggers even in creative mode.
 * [MCPE-108988](https://bugs.mojang.com/browse/MCPE-108988): A `has_damage` filter test for `fatal` damage will pass when taking damage from blocks like magma and berry bushes, regardless of whether the damage was fatal.
 * [MCPE-66473](https://bugs.mojang.com/browse/MCPE-66473): A `has_damage` filter test for `fatal` damage will pass if the base damage is enough to kill the entity, not taking into account armor reduction.
+* [MCPE-157652](https://bugs.mojang.com/browse/MCPE-157652): `damager` doesn't work as an event's `target`.
 
 ---
 
