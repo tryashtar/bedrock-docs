@@ -17,7 +17,7 @@ By default, a trigger will activate for *all* kinds of damage. There are two fie
 |Type|Name|Description|
 |-|-|-|
 |<img src="../icons/string.png" width=16>|`cause`|Only activate for [damage of a specific type](../damage-types.md).|
-|<img src="../icons/object.png" width=16>/<img src="../icons/list.png" width=16>|`filters`|Only activate when the [filter](../filters.md) passes. This goes inside an `on_damage` object alongside `event`. The `has_damage` test is often used here to check for `fatal` damage.|
+|<img src="../icons/object.png" width=16> <img src="../icons/list.png" width=16>|`filters`|Only activate when the [filter](../filters.md) passes. This goes inside an `on_damage` object alongside `event`. The `has_damage` test is often used here to check for `fatal` damage.|
 
 There is no way to check for the *amount* of damage. If the checks pass, the trigger will activate. There are three fields that can modify the damage in response:
 
