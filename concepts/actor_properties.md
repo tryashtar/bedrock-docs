@@ -16,9 +16,9 @@ Actor properties have similarities to [scoreboard values](scoreboard.md), [molan
 
 * Compared to dummy components, actor properties have no side-effects, and don't require a unique component group for every possible value.
 
-The value of a property can be accessed with the `query.actor_property` query. It takes one parameter, the identifier of the property, and returns the current value. `int` and `bool`-type properties are converted to floats as typical for molang.
+In molang, the value of a property can be accessed with the `query.property` query. It takes one parameter, the identifier of the property, and returns the current value. `int` and `bool`-type properties are converted to floats as typical for molang.
 
-`query.has_actor_property` is the same, and returns `1.0` if the entity has any property with that identifier, and `0.0` otherwise.
+`query.has_property` is the same, and returns `1.0` if the entity has any property with that identifier, and `0.0` otherwise.
 
 ---
 
@@ -32,9 +32,9 @@ Actor properties go inside a `properties` object inside the `description` of an 
 |<img src="../icons/list.png" width=16>|`range`|For `int` and `float`-type properties. Two entries: the minimum possible value for the property, and the maximum. Any time the property would be set to a value outside of this range, it gets clamped to fit.|
 |<img src="../icons/list.png" width=16>|`values`|For `enum`-type properties. List of strings, where each string is a possible value for this property.|
 |<img src="../icons/int.png" width=16> <img src="../icons/float.png" width=16> <img src="../icons/bool.png" width=16> <img src="../icons/string.png" width=16>|`default`|Default value this property will have when the entity is created. Can either be a literal value, or a [molang](molang.md) expression.|
-|<img src="../icons/bool.png" width=16>|`client_sync`|Optional, defaults to false. When true, this property will be accessible with `query.actor_property` client-side as well as server-side. When false, it's only available server-side, and the client will always return `0.0` and show a content log warning.|
+|<img src="../icons/bool.png" width=16>|`client_sync`|Optional, defaults to false. When true, this property will be accessible with `query.property` client-side as well as server-side. When false, it's only available server-side, and the client will always return `0.0` and show a content log warning.|
 
-The only way to change the value of an actor property after the entity is created is with [entity events](events.md). Use an object called `set_actor_property`. Each key is the identifier of a property, and the matching value is a [molang](molang.md) expression.
+The only way to change the value of an actor property after the entity is created is with [entity events](events.md). Use an object called `set_property`. Each key is the identifier of a property, and the matching value is a [molang](molang.md) expression.
 
 ---
 
@@ -100,13 +100,13 @@ Increment or decrement a property:
 ```jsonc
 "events": {
    "gain_horn": {
-      "set_actor_property": {
-         "test:horns": "q.actor_property('test:horns')+1"
+      "set_property": {
+         "test:horns": "q.property('test:horns')+1"
       }
    },
    "lose_horn": {
-      "set_actor_property": {
-         "test:horns": "q.actor_property('test:horns')-1"
+      "set_property": {
+         "test:horns": "q.property('test:horns')-1"
       }
    }
 }
@@ -116,7 +116,7 @@ Set multiple properties:
 ```jsonc
 "events": {
    "full_power": {
-      "set_actor_property": {
+      "set_property": {
          "test:horns": 8,
          "test:color": "'red'",
          "test:stamina": 100
